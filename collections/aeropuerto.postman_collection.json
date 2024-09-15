@@ -1,0 +1,552 @@
+{
+	"info": {
+		"_postman_id": "de2f7913-748a-4425-a4c5-8337655518e3",
+		"name": "aeropuerto",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "37857984"
+	},
+	"item": [
+		{
+			"name": "create-Crear aeropuerto",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var data = pm.response.json()\r",
+							"pm.globals.set(\"aeropuertoId\", data.id);",
+							"pm.test(\"Response status code is 201\", function () {",
+							"    pm.expect(pm.response.code).to.equal(201);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Response has the required fields\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData).to.be.an('object');",
+							"    pm.expect(responseData).to.have.property('nombre');",
+							"    pm.expect(responseData).to.have.property('codigo');",
+							"    pm.expect(responseData).to.have.property('pais');",
+							"    pm.expect(responseData).to.have.property('ciudad');",
+							"    pm.expect(responseData).to.have.property('id');",
+							"});",
+							"",
+							"",
+							"pm.test(\"Nombre, codigo, pais, and ciudad are non-empty strings\", function () {",
+							"  const responseData = pm.response.json();",
+							"",
+							"  pm.expect(responseData).to.be.an('object');",
+							"  pm.expect(responseData.nombre).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Nombre should not be empty\");",
+							"  pm.expect(responseData.codigo).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Codigo should not be empty\");",
+							"  pm.expect(responseData.pais).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Pais should not be empty\");",
+							"  pm.expect(responseData.ciudad).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Ciudad should not be empty\");",
+							"});",
+							"",
+							"",
+							"pm.test(\"Id is a non-negative integer\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData.id).to.be.a('number');",
+							"    pm.expect(responseData.id).to.be.at.least(0);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Content-Type header is application/json\", function () {",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"nombre\": \"aeropuerto 1\",\r\n    \"codigo\": \"123\",\r\n    \"pais\": \"colombia\",\r\n    \"ciudad\": \"bogotá\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/airports",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"airports"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create-Crear aeropuerto invalido",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 400\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(400);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\r\n    \"codigo\": \"123\",\r\n    \"pais\": \"colombia\",\r\n    \"ciudad\": \"bogotá\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/airports",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"airports"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "findAll-Obtener aeropuertos",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Response has the required fields\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData).to.be.an('array');",
+							"    ",
+							"    responseData.forEach(function(airport) {",
+							"        pm.expect(airport).to.have.property('id');",
+							"        pm.expect(airport).to.have.property('nombre');",
+							"        pm.expect(airport).to.have.property('codigo');",
+							"        pm.expect(airport).to.have.property('pais');",
+							"        pm.expect(airport).to.have.property('ciudad');",
+							"    });",
+							"});",
+							"",
+							"",
+							"pm.test(\"Id field should be a number\", function () {",
+							"    const responseData = pm.response.json();",
+							"    responseData.forEach(function(airport) {",
+							"        pm.expect(airport.id).to.be.a('number');",
+							"    });",
+							"});",
+							"",
+							"pm.test(\"Nombre field should be a string\", function () {",
+							"    const responseData = pm.response.json();",
+							"    responseData.forEach(function(airport) {",
+							"        pm.expect(airport.nombre).to.be.a('string');",
+							"    });",
+							"});",
+							"",
+							"pm.test(\"Codigo field should be a string\", function () {",
+							"    const responseData = pm.response.json();",
+							"    responseData.forEach(function(airport) {",
+							"        pm.expect(airport.codigo).to.be.a('string');",
+							"    });",
+							"});",
+							"",
+							"pm.test(\"Pais field should be a string\", function () {",
+							"    const responseData = pm.response.json();",
+							"    responseData.forEach(function(airport) {",
+							"        pm.expect(airport.pais).to.be.a('string');",
+							"    });",
+							"});",
+							"",
+							"pm.test(\"Ciudad field should be a string\", function () {",
+							"    const responseData = pm.response.json();",
+							"    responseData.forEach(function(airport) {",
+							"        pm.expect(airport.ciudad).to.be.a('string');",
+							"    });",
+							"});",
+							"",
+							"",
+							"pm.test(\"Content-Type header is application/json\", function () {",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+							"});",
+							"",
+							"",
+							"pm.test(\"Response array is not empty and contains at least one element\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData).to.be.an('array').that.is.not.empty;",
+							"    responseData.forEach(function(element) {",
+							"        pm.expect(element).to.be.an('object');",
+							"    });",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/airports",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"airports"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "findOne-Obtener aeropuertos por aeropuertoId",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var data = pm.response.json()\r",
+							"pm.globals.set(\"aerolineaId\", data.id);",
+							"pm.test(\"Response has the required fields\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData).to.be.an('object');",
+							"    pm.expect(responseData).to.have.property('id');",
+							"    pm.expect(responseData).to.have.property('nombre');",
+							"    pm.expect(responseData).to.have.property('codigo');",
+							"    pm.expect(responseData).to.have.property('pais');",
+							"    pm.expect(responseData).to.have.property('ciudad');",
+							"});",
+							"",
+							"",
+							"pm.test(\"Id is a non-negative integer\", function () {",
+							"  const responseData = pm.response.json();",
+							"",
+							"  pm.expect(responseData).to.be.an('object');",
+							"  pm.expect(responseData.id).to.be.a('number').and.to.satisfy((id) => id >= 0, \"Id must be a non-negative integer\");",
+							"});",
+							"",
+							"",
+							"pm.test(\"Nombre, codigo, pais, and ciudad are non-empty strings\", function () {",
+							"  const responseData = pm.response.json();",
+							"",
+							"  pm.expect(responseData).to.be.an('object');",
+							"  pm.expect(responseData.nombre).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Nombre should not be empty\");",
+							"  pm.expect(responseData.codigo).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Codigo should not be empty\");",
+							"  pm.expect(responseData.pais).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Pais should not be empty\");",
+							"  pm.expect(responseData.ciudad).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Ciudad should not be empty\");",
+							"});",
+							"",
+							"",
+							"pm.test(\"Content type is application/json\", function () {",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+							"});",
+							"",
+							"",
+							"pm.test(\"Response time is less than 200ms\", function () {",
+							"  pm.expect(pm.response.responseTime).to.be.below(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/airports/{{aeropuertoId}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"airports",
+						"{{aeropuertoId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "findOne-Obtener aeropuertos por aeropuertoId Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 404\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(404);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/airports/9999",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"airports",
+						"9999"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update-Actualizar aeropuerto por aeropuertoId",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var data = pm.response.json()\r",
+							"pm.globals.set(\"aeropuertoId\", data.id);",
+							"pm.test(\"Response status code is 200\", function () {",
+							"    pm.expect(pm.response.code).to.equal(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Response has the required fields - id, nombre, codigo, pais, ciudad\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData).to.be.an('object');",
+							"    pm.expect(responseData).to.have.property('id');",
+							"    pm.expect(responseData).to.have.property('nombre');",
+							"    pm.expect(responseData).to.have.property('codigo');",
+							"    pm.expect(responseData).to.have.property('pais');",
+							"    pm.expect(responseData).to.have.property('ciudad');",
+							"});",
+							"",
+							"",
+							"pm.test(\"Nombre, codigo, pais, and ciudad are non-empty strings\", function () {",
+							"  const responseData = pm.response.json();",
+							"  ",
+							"  pm.expect(responseData).to.be.an('object');",
+							"  pm.expect(responseData).to.include.all.keys('nombre', 'codigo', 'pais', 'ciudad');",
+							"  pm.expect(responseData.nombre).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Value should not be empty\");",
+							"  pm.expect(responseData.codigo).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Value should not be empty\");",
+							"  pm.expect(responseData.pais).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Value should not be empty\");",
+							"  pm.expect(responseData.ciudad).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Value should not be empty\");",
+							"});",
+							"",
+							"",
+							"pm.test(\"Id should be a non-negative integer\", function () {",
+							"  const responseData = pm.response.json();",
+							"  ",
+							"  pm.expect(responseData).to.be.an('object');",
+							"  pm.expect(responseData.id).to.be.a('number').and.to.be.at.least(0, \"Id should be a non-negative integer\");",
+							"});",
+							"",
+							"",
+							"pm.test(\"Content-Type header is application/json\", function () {",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"nombre\": \"aeropuerto N33333 modificado\",\r\n    \"codigo\": \"124\",\r\n    \"pais\": \"colombia\",\r\n    \"ciudad\": \"Medellin\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/airports/{{aeropuertoId}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"airports",
+						"{{aeropuertoId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update-Actualizar aeropuerto por  ID que no existe.",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 404\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(404);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"nombre\": \"aeropuerto N33333 modificado\",\r\n    \"codigo\": \"124\",\r\n    \"pais\": \"colombia\",\r\n    \"ciudad\": \"Medellin\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/airports/999",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"airports",
+						"999"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete-Eliminar aeropuerto por aeropuertoId",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 204\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(204);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/airports/{{aeropuertoId}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"airports",
+						"{{aeropuertoId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete-Eliminar aeropuerto por ID que no existe",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 404\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(404);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/airports/9999",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"airports",
+						"9999"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

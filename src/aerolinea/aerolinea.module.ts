@@ -7,7 +7,7 @@ import { AerolineaController } from './aerolinea.controller';
 @Module({
   imports: [TypeOrmModule.forFeature([AerolineaEntity])],
   providers: [AerolineaService],
-  exports: [AerolineaService],
+  //exports: [AerolineaService],
   controllers: [AerolineaController],
 })
 export class AerolineaModule {}

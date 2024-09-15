@@ -2,6 +2,9 @@ import { Body, Controller, Delete, Get, HttpCode, Param, Post, Put, UseIntercept
 import { BusinessErrorsInterceptor } from 'shared/interceptors/business-errors.interceptor';
 import { AeropuertoService } from './aeropuerto.service';
 import { AeropuertoEntity } from './aeropuerto.entity/aeropuerto.entity';
+import { plainToInstance } from 'class-transformer';
+import { AerolineaDto } from 'src/aerolinea/aerolinea.dto/aerolinea.dto';
+import { AeropuertoDto } from './aeropuerto.dto/aeropuerto.dto';
 
 @Controller('airports')
 @UseInterceptors(BusinessErrorsInterceptor)
@@ -21,8 +24,9 @@ export class AeropuertoController {
   }
 
   @Post()
-  async create(@Body() aeropuerto: AeropuertoEntity): Promise<AeropuertoEntity> {
-    return this.aeropuertoService.create(aeropuerto);
+  async create(@Body() aeropuertoDto: AeropuertoDto): Promise<AeropuertoEntity> {
+    const aeropuerto = plainToInstance(AeropuertoEntity, aeropuertoDto);
+    return await this.aeropuertoService.create(aeropuerto);
   }
 
   @Put(':aeropuertoId')

@@ -36,7 +36,7 @@ export class AerolineaAeropuertoController {
   async updateAirportsFromAirline(
     @Param('aerolineaId') aerolineaId: number,
     @Body() nuevosAeropuertosIds: number[],
-  ): Promise<void> {
+  ): Promise<AeropuertoEntity[]> {
     return this.aerolineaAeropuertoService.updateAirportsFromAirline(aerolineaId, nuevosAeropuertosIds);
   }
 

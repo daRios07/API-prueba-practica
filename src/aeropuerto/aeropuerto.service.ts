@@ -31,9 +31,8 @@ export class AeropuertoService {
         }
       }
     
-      async update(id: number, aeropuerto: AeropuertoEntity): Promise<AeropuertoEntity> {
-        const currentAeropuerto = await this.findOne(id);
-    
+      async update(aeropuertoId: number, aeropuerto: AeropuertoEntity): Promise<AeropuertoEntity> {
+        const currentAeropuerto = await this.findOne(aeropuertoId);
         if (this.validateCode(aeropuerto.codigo)) {
           return this.aeropuertoRepository.save({ ...currentAeropuerto, ...aeropuerto });
         } else {
@@ -41,8 +40,13 @@ export class AeropuertoService {
         }
       }
     
-      async delete(id: number): Promise<void> {
-        await this.aeropuertoRepository.delete(id);
+      async delete(aeropuertoId: number): Promise<void> {
+        let id = aeropuertoId;
+        const aeropuerto = await this.aeropuertoRepository.findOne({where:{id}});
+        if (!aeropuerto) {
+          throw new NotFoundException("No se encuentra el aeropuerto Id "+id);
+        }
+        await this.aeropuertoRepository.delete(aeropuertoId);
       }
     
       private validateCode(codigo: string): boolean {

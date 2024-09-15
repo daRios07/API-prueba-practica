@@ -31,8 +31,8 @@ export class AerolineaService {
         }
       }
     
-      async update(id: number, aerolinea: AerolineaEntity): Promise<AerolineaEntity> {
-        const currentAerolinea = await this.findOne(id);
+      async update(aerolineaId: number, aerolinea: AerolineaEntity): Promise<AerolineaEntity> {
+        const currentAerolinea = await this.findOne(aerolineaId);
     
         if (this.validateDate(aerolinea.fechaFundacion)) {
           return this.aerolineaRepository.save({ ...currentAerolinea, ...aerolinea });
@@ -41,8 +41,13 @@ export class AerolineaService {
         }
       }
     
-      async delete(id: number): Promise<void> {
-        await this.aerolineaRepository.delete(id);
+      async delete(aerolineaId: number): Promise<void> {
+        let id = aerolineaId;
+        const aerolinea = await this.aerolineaRepository.findOne({where:{id}});
+        if (!aerolinea) {
+          throw new NotFoundException("No se encuentra la aerolinea con ID "+id);
+        }
+        await this.aerolineaRepository.delete(aerolineaId);
       }
     
       private validateDate(fecha: Date): boolean {
